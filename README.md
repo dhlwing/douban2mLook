@@ -4,4 +4,6 @@ douban2mLook
 
 Found books in mLook when you see it on douban
 
-Fork from irachex: https://github.com/irachex/DoubanBook2Shuim
+œ¬‘ÿµÿ÷∑£∫https://github.com/dhlwing/douban2mLook/blob/master/mlook.crx?raw=true
+
+desc: Fork from irachex: https://github.com/irachex/DoubanBook2Shuim
