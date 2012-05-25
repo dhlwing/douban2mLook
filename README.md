@@ -1,6 +1,6 @@
 douban2mLook
 ============
-在豆瓣读书页面显示mLook的链接的Chrome插件
+在豆瓣读书页面显示mLook的下载链接地址的Chrome插件
 
 Found books in mLook when you see it on douban
 
