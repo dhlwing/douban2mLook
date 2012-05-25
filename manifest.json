@@ -1,0 +1,16 @@
+{
+  "name": "douban2mLook",
+  "version": "1.0",
+  "description": "Found books in mLook when you see it on douban",
+  "content_scripts": [{
+      "matches": ["http://book.douban.com/*"],
+      "js": ["js/jquery.js", "js/douban2mlook.js"]
+  }],
+  "permissions" : [
+    "tabs", "http://www.mlook.mobi/*"
+  ],
+  "icons" : {
+    "48" : "icon.png",
+    "128" : "icon.png"
+  }
+}
