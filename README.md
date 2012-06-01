@@ -4,6 +4,6 @@ douban2mLook
 
 Found books in mLook when you see it on douban
 
-下载地址：https://github.com/dhlwing/douban2mLook/blob/master/mlook.crx?raw=true
+下载地址：https://github.com/downloads/dhlwing/douban2mLook/mlook.crx
 
 desc: Forked from irachex: https://github.com/irachex/DoubanBook2Shuim
