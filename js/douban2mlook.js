@@ -58,7 +58,7 @@ if ( url.indexOf('subject')!=-1 ){
 } else if( (url.indexOf('mine')!=-1)||(url.indexOf('people')!=-1) ){
     // People's Book List Page
     $('div.item ul').each(function(){
-        query = $('li.title a em', this).html();
+        query = $('li.title a em', this).text();
         dbBookUrl = $('li.title a', this).attr('href');
         var btn = $(sendQuery(query,dbBookUrl));
         $('div.opt-r', this).after(btn.css("float","right"));
@@ -67,7 +67,7 @@ if ( url.indexOf('subject')!=-1 ){
 } else if( url.indexOf('doulist')!=-1 ){
     // System's Book List Page : doulist
     $('div.article table').each(function(){
-        query = $('div.pl2 a', this).html();
+        query = $('div.pl2 a', this).text();
         dbBookUrl = $('div.pl2 a', this).attr('href');
         var btn = $(sendQuery(query,dbBookUrl));
         $('td > span.rr', this).prepend(btn);
@@ -75,7 +75,10 @@ if ( url.indexOf('subject')!=-1 ){
 } else if( url.indexOf('tag')!=-1 ){
     // System's Book List Page : tag
     $('div.article table').each(function(){
-        query = $('div.pl2 a', this).html();
+        query = $('div.pl2 a', this).contents().eq(0).text();
+        //query = $('div.pl2 a', this).text();
+        //var replace = $('div.pl2 a span', this).text();
+        //query = query.replace(replace,'');
         dbBookUrl = $('div.pl2 a', this).attr('href');
         var btn = $(sendQuery(query,dbBookUrl));
         $('td p span.rr', this).prepend(btn);
