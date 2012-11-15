@@ -76,11 +76,12 @@ if ( url.indexOf('subject')!=-1 ){
     // System's Book List Page : tag
     $('div.article table').each(function(){
         query = $('div.pl2 a', this).contents().eq(0).text();
+        console.log(query);
         //query = $('div.pl2 a', this).text();
         //var replace = $('div.pl2 a span', this).text();
         //query = query.replace(replace,'');
         dbBookUrl = $('div.pl2 a', this).attr('href');
-        var btn = $(sendQuery(query,dbBookUrl));
-        $('td p span.rr', this).prepend(btn);
+        var btn = $("<div style='float:right'>"+sendQuery(query,dbBookUrl)+"</div>");
+        $('td p.pl', this).append(btn);
     });
 }
