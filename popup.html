@@ -47,16 +47,14 @@
 //$(document).ready(init_popup);
 //$(document).ready(init_all);
 //$(document).ready(init_fav);
-    $(document).ready(function(){
-		chrome.browserAction.setBadgeText({text:'22'});
-		/*
-        db = get_db();
-        db.transaction(function (tx) {
-            tx.executeSql('update messages set msg_top=1 where msg_fav=0',[],function(tx,rs){
-		chrome.browserAction.setBadgeText({text:''});
-            });
-        });*/
-    });
+$(document).ready(function(){
+	db = get_db();
+	db.transaction(function (tx) {
+		tx.executeSql('update messages set msg_top=1 where msg_fav=0',[],function(tx,rs){
+	chrome.browserAction.setBadgeText({text:''});
+		});
+	});
+});
 
 </script>
 </body>
