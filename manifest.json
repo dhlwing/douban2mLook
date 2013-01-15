@@ -10,7 +10,13 @@
     "tabs", "http://www.mlook.mobi/*"
   ],
   "icons" : {
-    "48" : "icon.png",
+    "48" : "icon48.png",
     "128" : "icon.png"
-  }
+  },
+  "background_page": "background.html",
+  "browser_action": {
+      "default_icon": "icon.png",
+      "default_popup": "popup.html",
+      "homepage_url": "http://www.mlook.com"
+   }
 }

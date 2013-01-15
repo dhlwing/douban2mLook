@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>mLook精校电子书</title>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<link href="css/bootstrap.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+</style>
+</head>
+<body>
+<div class="container" style="width:500px;padding:15px 5px;">
+    <div class="row">
+        <div class="span1" style="padding-left:20px;"><img src="icon48.png"/></div>
+        <div class="span3">
+            <h3>mLook精校电子书</h3> <small>阅读  •  分享  •  生活</small>
+        </div>
+        <div class="span2">
+            <a href="http://www.mlook.mobi" target="_blank">网站首页</a>&nbsp;&nbsp;
+            <a href="options.html" target="_blank">插件设置</a>
+        </div>
+    </div>
+    <p>
+        <ul id="version_tabs" class="nav nav-tabs">
+            <li class="active"><a href="#all_notify_content" data-toggle="tab" id="all_notify_tab">所有提醒</a></li>
+                <li><a href="#fav_notify_content" data-toggle="tab" id="fav_notify_tab">本地收藏</a></li>
+                <!--<li><a href="#baoliao" data-toggle="tab">我要爆料</a></li>-->
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade active in" style="height:450px;" id="all_notify_content">
+                <div id="all_notify" style="height:420px;overflow-y:scroll;">
+                </div>
+                <div id="all_notify_toolbar">
+                    <!--<button class="btn-mini" style="margin:5px;" id="all_notify_setread"><i class="icon-ok"></i>全部标记为已读</button>-->
+                    <button class="btn-mini" style="margin:5px;" id="all_notify_remove"><i class="icon-remove"></i>全部删除</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="fav_notify_content" style="height:450px;">
+                <div id="fav_notify" style="height:420px;overflow-y:scroll;">
+                </div>
+                <div id="fav_notify_toolbar">
+                    <!--<button class="btn-mini" style="margin:5px;" id="fav_notify_setread"><i class="icon-ok"></i>全部标记为已读</button>-->
+                    <button class="btn-mini" style="margin:5px;" id="fav_notify_remove"><i class="icon-remove"></i>全部删除</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="baoliao">
+                <form id="baoliao_form" class="form-horizontal" method="get" action="">
+                    <fieldset>
+                        <div class="control-group">
+                            <label class="control-label" for="b2c_name">商城名称</label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge required" maxlength="100" name="b2c_name" id="b2c_name">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="item_name">商品名称+价格</label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge required" maxlength="200" name="item_name" id="item_name">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="buy_link">购买链接</label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge required" maxlength="1000" name="buy_link" id="buy_link">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="info_source">信息来源</label>
+                            <div class="controls">
+                    <div class="btn-group span4" data-toggle="buttons-radio" data-default="on" data-toggle-name="noti_switch" id="info_source">
+                        <button class="btn btn-primary active" value="on">在B2C网站看到</button>
+                        <button class="btn btn-primary" value="off">在第三方网站看到</button>
+                    </div>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="ref_reason">推荐理由</label>
+                            <div class="controls">
+                                <textarea class="input-xlarge required" marxlength="4000" name="ref_reason" id="ref_reason" rows="6" placeholder="买过、用过、研究过的网友可输入推荐理由，不建议网友直接粘贴商品介绍。我们将根据推荐理由的丰富和原创程度及爆料顺序确定唯一的爆料人。有效爆料将纳入未来的积分计划。"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" data-complete-text="爆料成功！" data-loading-text="发送中..." class="btn btn-primary submit" style="margin-left:100px" id="button_baoliao_send">发送</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </p>
+</div>
+<script>
+//$(document).ready(init_popup);
+//$(document).ready(init_all);
+//$(document).ready(init_fav);
+    $(document).ready(function(){
+		chrome.browserAction.setBadgeText({text:'22'});
+		/*
+        db = get_db();
+        db.transaction(function (tx) {
+            tx.executeSql('update messages set msg_top=1 where msg_fav=0',[],function(tx,rs){
+		chrome.browserAction.setBadgeText({text:''});
+            });
+        });*/
+    });
+
+</script>
+</body>
+</html>
