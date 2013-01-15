@@ -1,4 +1,5 @@
 {
+  "manifest_version": 2,
   "name": "douban2mLook",
   "version": "2.0",
   "description": "Found books in mLook when you see it on douban",
@@ -13,7 +14,7 @@
     "48" : "icon48.png",
     "128" : "icon.png"
   },
-  "background_page": "background.html",
+  "background": { "page": "background.html" },
   "browser_action": {
       "default_icon": "icon.png",
       "default_popup": "popup.html",
