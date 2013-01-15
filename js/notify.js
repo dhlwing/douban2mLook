@@ -109,6 +109,12 @@ function get_db() {
     return window.openDatabase("mLook_db", "", "mLook's message DB", 2097152,
     function(a) {})
 }
+function insert_message_db(a) {
+    db = get_db(),
+    db.transaction(function(b) {
+        b.executeSql('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.content + '","' + a.msg_url + '","' + a.msg_type + '","' + a.convert + '","' + a.builddate + '", "' + '",0,0)')
+    })
+}
 function del_message(a) {
     db = get_db(),
     db.transaction(function(b) {
@@ -199,6 +205,72 @@ function init_popup() {
                 function() {
                     $("#fav_notify_content").css("display", ""),
                     init_fav()
+                })
+            })
+        })
+    })
+}
+function init_fav() {
+    $("#fav_notify").html(""),
+    db = get_db(),
+    db.transaction(function(query) {
+        query.executeSql("select * from messages where msg_fav=1 order by msg_date desc ", [],
+        function(query, result) {
+            var c = $("#fav_notify"),
+            d = 0;
+            for (var e = 0; e < result.rows.length; e++) {
+                var f = result.rows.item(e),
+                g = f.convert;
+                if (g == "" || g == "logo" || g == "blank") g = "icon.png";
+                var h = '<div class="row-fluid"><div class="span3"><div style="margin-left:10px;height:80px;width:80px;border:#999 solid 1px;display:table;text-align:center"><div style="height:80px;width:80px;display:table-cell;vertical-align:middle"><img src="' + g + '" style="max-height:80px;max-width:80px;"></div></div></div>';
+                h += '<div class="span8"><h4>',
+                //f.msg_top == 0 && (h += '<span class="badge badge-error">新!</span> ', d++),
+                h += f.bookname + "</h4> <small>" + f.builddate + "</samll>",
+                h += '<p style="margin-top:3px;">',
+                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.bookid + '" msg_id="' + f.bookid + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-warning" name="button_del" msg_id="' + f.bookid + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
+                c.append(h)
+            }
+            sync_message_number(function(a) {
+                $("#fav_notify_tab").text("本地收藏 (" + a.message_fav_unread + "/" + a.message_fav + ")")
+            }),
+            $('button[name="button_detail"]', $("#fav_notify")).each(function() {
+                var button = $(this);
+                button.click(function() {
+                    set_message_read(a.attr("msg_id")),
+                    sync_message_number(function() {
+                        chrome.tabs.create({
+                            url: button.attr("detail_url")
+                        })
+                    })
+                })
+            }),
+            $('button[name="button_buy"]', $("#fav_notify")).each(function() {
+                var button = $(this);
+                button.click(function() {
+                    set_message_read(a.attr("msg_id")),
+                    sync_message_number(function() {
+                        chrome.tabs.create({
+                            url: button.attr("buy_url")
+                        })
+                    })
+                })
+            }),
+            $('button[name="button_del"]', $("#fav_notify")).each(function() {
+                var button = $(this);
+                button.click(function() {
+                    var b = $(this).parent().parent().parent().parent();
+                    b.next().fadeOut(500,
+                    function() {
+                        b.remove()
+                    }),
+                    b.fadeOut(500,
+                    function() {
+                        b.remove()
+                    }),
+                    del_message(a.attr("msg_id")),
+                    sync_message_number(function(a) {
+                        $("#fav_notify_tab").text("本地收藏 (" + a.message_fav_unread + "/" + a.message_fav + ")")
+                    })
                 })
             })
         })
