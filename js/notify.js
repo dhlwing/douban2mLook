@@ -1,3 +1,4 @@
+var bookinfoUrl = "http://www.mlook.mobi/book/info/";
 var Notify = function() {};
 Notify.prototype.isSupport = function() {
     return !! window.webkitNotifications
@@ -18,7 +19,6 @@ Notify.prototype.show = function(img, title, content) {
 function init_background() {
     var a = chrome.app.getDetails(),
     b = a.version;
-    //alert(a.version);
     console.log("current version: " + b);
     var c = localStorage.version;
     init_db(),
@@ -28,7 +28,7 @@ function init_background() {
         message_fav: 0,
         message_fav_unread: 0
     }
-    sync_message_number(function(a) {})
+    sync_message_number(function(a) {});
 }
 function init_push() {
     localStorage.getItem("noti_desktop") == null && localStorage.setItem("noti_desktop", "on"),
@@ -140,7 +140,7 @@ function sync_message_number(func) {
             }) : chrome.browserAction.setBadgeText({
                 text: ""
             }),
-            func != null && func(j.message_config)
+            func != null && func(backPage.message_config)
         })
     })
 }
@@ -205,45 +205,46 @@ function init_popup() {
     })
 }
 function init_all() {
+    
     $("#all_notify").html(""),
     db = get_db(),
-    db.transaction(function(a) {
-        a.executeSql("select * from messages where msg_fav=0 order by msg_date desc ", [],
-        function(a, b) {
+    db.transaction(function(query) {
+        query.executeSql("select * from messages where msg_fav=0 order by msg_date desc ", [],
+        function(query, result) {
             var c = $("#all_notify");
-            for (var d = 0; d < b.rows.length; d++) {
-                var e = b.rows.item(d),
-                f = e.msg_picurl;
-                if (f == "" || f == "logo" || f == "blank") f = "smzdm128.png";
+            for (var d = 0; d < result.rows.length; d++) {
+                var e = result.rows.item(d),
+                f = e.convert;
+                if (f == "" || f == "logo" || f == "blank") f = "icon.png";
                 var g = '<div class="row-fluid"><div class="span3"><div style="margin-left:10px;height:80px;width:80px;border:#999 solid 1px;display:table;text-align:center"><div style="height:80px;width:80px;display:table-cell;vertical-align:middle"><img src="' + f + '" style="max-height:80px;max-width:80px;"></div></div></div>';
                 g += '<div class="span8"><h4>',
-                e.msg_top == 0 && (g += '<span class="badge badge-error">新!</span> '),
-                g += e.msg_title + "</h4> <small>" + e.msg_date.substr(0, 19) + "</samll>",
+
+                g += e.bookname + "</h4> <small>" + e.builddate + "</samll>",
                 g += '<p style="margin-top:3px;">',
-                g += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + e.msg_url + '" msg_id="' + e.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-danger" name="button_buy" buy_url="' + e.msg_buyurl + '" msg_id="' + e.msg_id + '"><i class="icon-shopping-cart icon-white"></i>购买链接</button> - <button class="btn-mini btn-warning" name="button_fav" msg_id="' + e.msg_id + '"><i class="icon-star icon-white"></i>移至收藏</button></p></div></div><hr style="margin:8px 0;">',
+                g += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+e.bookid + '" msg_id="' + e.bookid + '"><i class="icon-search icon-white"></i>详情页面</button>  - <button class="btn-mini btn-warning" name="button_fav" msg_id="' + e.bookid + '"><i class="icon-star icon-white"></i>移至收藏</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(g)
             }
             sync_message_number(function(a) {
                 $("#all_notify_tab").text("所有提醒 (" + a.message_all_unread + "/" + a.message_all + ")")
             }),
             $('button[name="button_detail"]', $("#all_notify")).each(function() {
-                var a = $(this);
-                a.click(function() {
+                var button = $(this);
+                button.click(function() {
                     set_message_read(a.attr("msg_id")),
                     sync_message_number(function() {
                         chrome.tabs.create({
-                            url: a.attr("detail_url")
+                            url: button.attr("detail_url")
                         })
                     })
                 })
             }),
             $('button[name="button_buy"]', $("#all_notify")).each(function() {
-                var a = $(this);
-                a.click(function() {
+                var button = $(this);
+                button.click(function() {
                     set_message_read(a.attr("msg_id")),
                     sync_message_number(function() {
                         chrome.tabs.create({
-                            url: a.attr("buy_url")
+                            url: button.attr("buy_url")
                         })
                     })
                 })
@@ -267,5 +268,6 @@ function init_all() {
                 })
             })
         })
-    })
+    });
+    console.log('textssss');
 }
