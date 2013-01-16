@@ -53,16 +53,16 @@ function init_options_page() {
     $("#noti_sound_test").click(function() {
         var button = $(this);
         button.button("loading");
-        var b = new Audio("notify.mp3");
-        b.addEventListener("play",
+        var audio = new Audio("notify.mp3");
+        audio.addEventListener("play",
         function() {
-            a.button("loading")
+            button.button("loading")
         }),
-        b.addEventListener("ended",
+        audio.addEventListener("ended",
         function() {
-            a.button("reset")
+            button.button("reset")
         }),
-        b.play()
+        audio.play()
     }),
     $("#noti_desktop_test").click(function() {
         var a = $(this),
