@@ -131,7 +131,7 @@ function get_message(a) {
 function init_db() {
     db = get_db(),
     db.transaction(function(a) {
-        a.executeSql("create table if not exists messages(msg_id text, msg_title text, msg_desc text null, msg_url text null, msg_type text null, msg_picurl text null, msg_date text null, msg_douban_star text null,msg_average_star text null,msg_fav int, msg_top int)")
+        a.executeSql("create table if not exists messages(msg_id text, msg_title text, msg_desc text null, msg_url text null, msg_isbn text null,msg_type text null, msg_picurl text null, msg_date text null, msg_douban_star text null,msg_average_star text null,msg_fav int, msg_top int)")
     })
 }
 function get_db() {
@@ -139,9 +139,10 @@ function get_db() {
     function(a) {})
 }
 function insert_message_db(a) {
-    db = get_db(),
+    db = get_db();
+    console.log('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.desc + '","' + a.linkurl + '","'+a.isbn +'","' + a.itemtype + '","' + a.convert + '","' + a.builddate + '", "' + a.douban_star +'","'+a.average_star+'",0,0)');
     db.transaction(function(b) {
-        b.executeSql('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.desc + '","' + a.linkurl + '","' + a.itemtype + '","' + a.convert + '","' + a.builddate + '", "' + a.douban_star +'","'+a.average_star+'",0,0)')
+        b.executeSql('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.desc + '","' + a.linkurl + '","'+a.isbn +'","' + a.itemtype + '","' + a.convert + '","' + a.builddate + '", "' + a.douban_star +'","'+a.average_star+'",0,0)')
     })
 }
 function limit_message_db(a) {
@@ -188,7 +189,7 @@ function sync_message_number(func) {
                 if(row.msg_fav == 0 || row.msg_type=="dig") {
                     if(row.msg_type=="dig") {
                         dig++;
-                        row.msg_top == 0 && dig_unread++;
+                        row.msg_top == 0 && (dig_unread++ && unread++);
                     } else {
                         allitem++;
                         row.msg_top == 0 && unread++;
@@ -196,7 +197,7 @@ function sync_message_number(func) {
                 } else {
                     if(row.msg_type=="dig") {
                         dig++;
-                        row.msg_top == 0 && dig_unread++;
+                        row.msg_top == 0 && (dig_unread++ && unread++);
                     } else {
                         fav++;
                         row.msg_top == 0 && fav_unread++;
@@ -277,6 +278,19 @@ function init_popup() {
                 })
             })
         })
+    }),
+    $("#dig_notify_remove").click(function() {
+        db = get_db(),
+        db.transaction(function(a) {
+            a.executeSql("delete from messages where msg_type='dig'", [],
+            function(a, b) {
+                $("#dig_notify_content").fadeOut("slow",
+                function() {
+                    $("#dig_notify_content").css("display", ""),
+                    init_dig()
+                })
+            })
+        })
     })
 }
 function init_fav() {
@@ -295,10 +309,11 @@ function init_fav() {
                 h += '<div class="span8"><h4>',
                 f.msg_top == 0 && (h += '<span class="badge badge-error">新!</span> ', d++);
                 if(f.msg_type == "book") {
-                h += f.msg_title + "</h4> <small>豆瓣评分：" + f.msg_douban_star + "</samll>";
+                    h += f.msg_title + "</h4> <small>豆瓣评分：" + f.msg_douban_star + "</small>";
+                    h += "<br><samll>ISBN:"+f.msg_isbn+"</samll>"
                 }
                 h += '<p style="margin-top:3px;">',
-                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-warning" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
+                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-danger" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(h)
             }
             sync_message_number(function(a) {
@@ -329,7 +344,7 @@ function init_fav() {
             $('button[name="button_del"]', $("#fav_notify")).each(function() {
                 var button = $(this);
                 button.click(function() {
-                    var b = $(this).parent().parent().parent().parent();
+                    var b = $(this).parent().parent().parent();
                     b.next().fadeOut(500,
                     function() {
                         b.remove()
@@ -365,7 +380,7 @@ function init_dig() {
                 f.msg_top == 0 && (h += '<span class="badge badge-error">新!</span> ', d++),
                 h += f.msg_title + "</h4> " ,
                 h += '<p style="margin-top:3px;">',
-                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-warning" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
+                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-danger" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(h)
             }
             sync_message_number(function(a) {
@@ -396,7 +411,7 @@ function init_dig() {
             $('button[name="button_del"]', $("#dig_notify")).each(function() {
                 var button = $(this);
                 button.click(function() {
-                    var b = $(this).parent().parent().parent().parent();
+                    var b = $(this).parent().parent().parent();
                     b.next().fadeOut(500,
                     function() {
                         b.remove()
@@ -430,6 +445,7 @@ function init_all() {
                 g += '<div class="span8"><h4>',
                 f.msg_top == 0 && (h += '<span class="badge badge-error">新!</span> ', d++),
                 g += e.msg_title + "</h4> <small>豆瓣评分：" + e.msg_douban_star + "</samll>",
+                g += "<br><samll>ISBN:"+e.msg_isbn+"</samll>"
                 g += '<p style="margin-top:3px;">',
                 g += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+e.msg_id + '" msg_id="' + e.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button>  - <button class="btn-mini btn-warning" name="button_fav" msg_id="' + e.msg_id + '"><i class="icon-star icon-white"></i>移至收藏</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(g)
