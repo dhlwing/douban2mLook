@@ -36,8 +36,7 @@ function init_push() {
     localStorage.getItem("last_msg_id") == null && localStorage.setItem("last_msg_id", "0"),
     localStorage.getItem("last_msg_date") == null && localStorage.setItem("last_msg_date", ""),
     localStorage.getItem("unchecked_msg") == null && localStorage.setItem("unchecked_msg", "0"),
-    localStorage.getItem("item_location") == null && localStorage.setItem("item_location", "cn;global"),
-    localStorage.getItem("noti_cat_18301") == null && localStorage.setItem("noti_cat_18301", "on"),
+
     localStorage.getItem("message_limit") == null && localStorage.setItem("message_limit", "100"),
     limit_message_db(localStorage.getItem("message_limit")),
     chrome.browserAction.onClicked.addListener(function(a) {
@@ -65,25 +64,30 @@ function get_message(a) {
     $.getJSON("http://www.mlook.mobi/api/client/push",
     function(msg) {
         msg.reverse();
+        console.log(msg);
         var b = [],
         noti_desktop = localStorage.getItem("noti_desktop"),
         noti_sound = 'on',
         desktop_time = '30',
         last_msg_id = parseInt(localStorage.getItem("last_msg_id")),
-        last_msg_date = localStorage.getItem("last_msg_date"),
-        item_location = localStorage.getItem("item_location"),
+        last_msg_date = localStorage.getItem("last_msg_date") ? localStorage.getItem("last_msg_date"):0,
         i = !1;
+        console.log(last_msg_id);
+        last_msg_id = last_msg_id ? last_msg_id : 0;
         $.each(msg,
         function(a, d) {
-            var h = !1,
-            lastid = parseInt(d.bookid),
-            lasttime = d.builddate;
+            var h = !1;
+            if(d.itemtype == 'book') {
+                var lastid = parseInt(d.bookid);
+            } else {
+                var lastid = parseInt(d.bookid);
+            }
+            var lasttime = d.builddate;
             if (lasttime != last_msg_date && lastid > last_msg_id) {
-                r.length > 0 && (h = !0, console.log("item_default: " + r[0])),
-                h && (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), c == "on" && (i = !0, setTimeout(function() {
-                    b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + j),
+                (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
+                    b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + lastid),
                     b[a].show(),
-                    //console.log("noti array: " + b.length),
+                    console.log("noti array: " + b.length),
                     setTimeout(function() {
                         b[a].cancel()
                     },
@@ -95,14 +99,14 @@ function get_message(a) {
             }
         }),
         i && noti_sound == "on" && (sync_message_number(), (new Audio("notify.mp3")).play()),
-        localStorage.setItem("last_msg_id", f.toString()),
-        localStorage.setItem("last_msg_date", g)
+        localStorage.setItem("last_msg_id", last_msg_id.toString()),
+        localStorage.setItem("last_msg_date", last_msg_date)
     })
 }
 function init_db() {
     db = get_db(),
     db.transaction(function(a) {
-        a.executeSql("create table if not exists messages(msg_id text, msg_title text, msg_desc text, msg_url text, msg_type text, msg_picurl text, msg_date text, msg_buyurl text, msg_fav int, msg_top int)")
+        a.executeSql("create table if not exists messages(msg_id text, msg_title text, msg_desc text null, msg_url text null, msg_type text null, msg_picurl text null, msg_date text null, msg_douban_star text null,msg_average_star text null,msg_fav int, msg_top int)")
     })
 }
 function get_db() {
@@ -112,13 +116,33 @@ function get_db() {
 function insert_message_db(a) {
     db = get_db(),
     db.transaction(function(b) {
-        b.executeSql('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.content + '","' + a.msg_url + '","' + a.msg_type + '","' + a.convert + '","' + a.builddate + '", "' + '",0,0)')
+        b.executeSql('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.desc + '","' + a.linkurl + '","' + a.itemtype + '","' + a.convert + '","' + a.builddate + '", "' + a.douban_star +'","'+a.average_star+'",0,0)')
+    })
+}
+function limit_message_db(a) {
+    db = get_db(),
+    db.transaction(function(b) {
+        b.executeSql("delete from messages where msg_id in (select msg_id from messages where msg_fav=0 order by msg_date desc limit " + a + ",100000)")
     })
 }
 function del_message(a) {
     db = get_db(),
     db.transaction(function(b) {
         b.executeSql("delete from messages where msg_id=" + a, [],
+        function(a, b) {})
+    })
+}
+function set_message_read(a) {
+    db = get_db(),
+    db.transaction(function(query) {
+        query.executeSql("update messages set msg_top=1 where msg_id=" + a, [],
+        function(a, b) {})
+    })
+}
+function set_message_fav(a) {
+    db = get_db(),
+    db.transaction(function(query) {
+        query.executeSql("update messages set msg_fav=1 where msg_id=" + a, [],
         function(a, b) {})
     })
 }
@@ -220,14 +244,14 @@ function init_fav() {
             d = 0;
             for (var e = 0; e < result.rows.length; e++) {
                 var f = result.rows.item(e),
-                g = f.convert;
+                g = f.msg_picurl;
                 if (g == "" || g == "logo" || g == "blank") g = "icon.png";
-                var h = '<div class="row-fluid"><div class="span3"><div style="margin-left:10px;height:80px;width:80px;border:#999 solid 1px;display:table;text-align:center"><div style="height:80px;width:80px;display:table-cell;vertical-align:middle"><img src="' + g + '" style="max-height:80px;max-width:80px;"></div></div></div>';
+                var h = '<div class="row-fluid"><div class="span3"><div style="margin-left:10px;height:80px;width:80px;border:#999 solid 1px;display:table;text-align:center"><div style="height:80px;width:80px;display:table-cell;vertical-align:middle"><img src="' + g + '" style="max-height:133px;max-width:80px;"></div></div></div>';
                 h += '<div class="span8"><h4>',
                 //f.msg_top == 0 && (h += '<span class="badge badge-error">新!</span> ', d++),
-                h += f.bookname + "</h4> <small>" + f.builddate + "</samll>",
+                h += f.msg_title + "</h4> <small>豆瓣评分：" + e.msg_douban_star + "</samll>",
                 h += '<p style="margin-top:3px;">',
-                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.bookid + '" msg_id="' + f.bookid + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-warning" name="button_del" msg_id="' + f.bookid + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
+                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-warning" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(h)
             }
             sync_message_number(function(a) {
@@ -236,7 +260,7 @@ function init_fav() {
             $('button[name="button_detail"]', $("#fav_notify")).each(function() {
                 var button = $(this);
                 button.click(function() {
-                    set_message_read(a.attr("msg_id")),
+                    set_message_read(button.attr("msg_id")),
                     sync_message_number(function() {
                         chrome.tabs.create({
                             url: button.attr("detail_url")
@@ -247,7 +271,7 @@ function init_fav() {
             $('button[name="button_buy"]', $("#fav_notify")).each(function() {
                 var button = $(this);
                 button.click(function() {
-                    set_message_read(a.attr("msg_id")),
+                    set_message_read(button.attr("msg_id")),
                     sync_message_number(function() {
                         chrome.tabs.create({
                             url: button.attr("buy_url")
@@ -267,7 +291,7 @@ function init_fav() {
                     function() {
                         b.remove()
                     }),
-                    del_message(a.attr("msg_id")),
+                    del_message(button.attr("msg_id")),
                     sync_message_number(function(a) {
                         $("#fav_notify_tab").text("本地收藏 (" + a.message_fav_unread + "/" + a.message_fav + ")")
                     })
@@ -286,14 +310,14 @@ function init_all() {
             var c = $("#all_notify");
             for (var d = 0; d < result.rows.length; d++) {
                 var e = result.rows.item(d),
-                f = e.convert;
+                f = e.msg_picurl;
                 if (f == "" || f == "logo" || f == "blank") f = "icon.png";
-                var g = '<div class="row-fluid"><div class="span3"><div style="margin-left:10px;height:80px;width:80px;border:#999 solid 1px;display:table;text-align:center"><div style="height:80px;width:80px;display:table-cell;vertical-align:middle"><img src="' + f + '" style="max-height:80px;max-width:80px;"></div></div></div>';
+                var g = '<div class="row-fluid"><div class="span3"><div style="margin-left:10px;height:80px;width:80px;border:#999 solid 1px;display:table;text-align:center"><div style="height:80px;width:80px;display:table-cell;vertical-align:middle"><img src="' + f + '" style="max-height:133px;max-width:80px;"></div></div></div>';
                 g += '<div class="span8"><h4>',
 
-                g += e.bookname + "</h4> <small>" + e.builddate + "</samll>",
+                g += e.msg_title + "</h4> <small>豆瓣评分：" + e.msg_douban_star + "</samll>",
                 g += '<p style="margin-top:3px;">',
-                g += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+e.bookid + '" msg_id="' + e.bookid + '"><i class="icon-search icon-white"></i>详情页面</button>  - <button class="btn-mini btn-warning" name="button_fav" msg_id="' + e.bookid + '"><i class="icon-star icon-white"></i>移至收藏</button></p></div></div><hr style="margin:8px 0;">',
+                g += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+e.msg_id + '" msg_id="' + e.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button>  - <button class="btn-mini btn-warning" name="button_fav" msg_id="' + e.msg_id + '"><i class="icon-star icon-white"></i>移至收藏</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(g)
             }
             sync_message_number(function(a) {
@@ -302,7 +326,7 @@ function init_all() {
             $('button[name="button_detail"]', $("#all_notify")).each(function() {
                 var button = $(this);
                 button.click(function() {
-                    set_message_read(a.attr("msg_id")),
+                    set_message_read(button.attr("msg_id")),
                     sync_message_number(function() {
                         chrome.tabs.create({
                             url: button.attr("detail_url")
@@ -341,5 +365,4 @@ function init_all() {
             })
         })
     });
-    console.log('textssss');
 }

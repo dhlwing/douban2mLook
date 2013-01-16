@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+</head>
+<body style="overflow-x:hidden;overflow-y:hidden;">
+<div class="container" style="margin:5px;height:148px;width:290px;">
+    <div class="row-fluid">
+        <div class="span4">
+            <div style="height:90px;width:90px;display:table;border:#999 solid 1px;margin-bottom:8px;text-align:center">
+                <div style="height:90px;width:90px;display:table-cell;vertical-align:middle">
+                <img src="smzdm128.png" style="max-width:90px;max-height:90px;" id="msg_picurl"/>
+                </div>
+            </div>
+            <button class="btn-mini btn-danger" style="margin-bottom:5px;width:92px" id="button_buy">直达链接</button><br/>
+            <button class="btn-mini btn-success" style="width:92px;" id="button_detail">促销详情</button>
+        </div>
+        <div class="span8">
+            <div style="width:190px;height:150px;overflow:hidden;text-overflow:ellipsis;">
+            <h4 id="msg_title"></h4>
+            <em id="msg_date"></em>
+            <p id="msg_desc"></p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript" src="assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery.url.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/smzdm.js"></script>
+<script>
+$(document).ready(notification_init);
+</script>
+</body>
+</html>

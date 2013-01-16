@@ -1,3 +1,3 @@
 
 $(document).ready(init_background);
-//$(document).ready(init_push);
+$(document).ready(init_push);

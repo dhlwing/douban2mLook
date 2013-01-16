@@ -7,9 +7,7 @@
       "matches": ["http://book.douban.com/*"],
       "js": ["js/jquery.js", "js/douban2mlook.js"]
   }],
-  "permissions" : [
-    "tabs", "http://www.mlook.mobi/*"
-  ],
+  "permissions" : [ "notifications", "http://*.mlook.mobi/*" ],
   "icons" : {
     "48" : "icon48.png",
     "128" : "icon.png"
