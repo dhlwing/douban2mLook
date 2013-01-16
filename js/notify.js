@@ -79,7 +79,7 @@ function notifyShow() {
     var a = request("msg_id");
     a == 0 ? ($("#msg_desc").text("mLook精校电子书，分享好的书籍，和朋友一起交流读书心得！"), $("#msg_title").text("mLook"), $("#msg_rate").text("http://www.mlook.mobi"), $("#button_info").click(function() {
         chrome.tabs.create({
-            url: msg.msg_url
+            url: 'http://www.mlook.mobi'
         })
     })) : (db = get_db(), db.transaction(function(b) {
         b.executeSql("select * from messages where msg_id=" + a +" order by msg_date desc limit 1", [],
