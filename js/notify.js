@@ -31,18 +31,22 @@ function request(paras){
 }
 function init_options_page() {
     $('div.btn-group[data-toggle-name="noti_switch"]').each(function() {
-        var a = $(this),
-        b = a.attr("id"),
-        c = localStorage.getItem(b),
-        d = a.attr("data-default");
-        console.log("localStorage: " + b + "= " + c),
-        c == null && (localStorage.setItem(b, d), c = d),
-        $("button", a).each(function() {
-            var a = $(this);
-            a.val() == c && a.button("toggle"),
-            a.click(function() {
-                console.log("radio switch: " + b + " -> " + a.val()),
-                localStorage.setItem(b, a.val())
+        var buttonGroup = $(this),
+        key = buttonGroup.attr("id"),
+        value = localStorage.getItem(key),
+        newvalue = buttonGroup.attr("data-default");
+        console.log("localStorage: " + key + "= " + value),
+        value == null && (localStorage.setItem(key, newvalue), value = newvalue),
+        $("button", buttonGroup).each(function() {
+            var button = $(this);
+            button.val() == value && button.button("toggle"),
+            button.click(function() {
+                console.log("radio switch: " + key + " -> " + button.val()),
+                localStorage.setItem(key, button.val());
+                $("button",buttonGroup).each(function(){
+                    $(this).attr('class','btn');
+                });
+                button.attr('class','btn btn-primary')
             })
         })
     }),
