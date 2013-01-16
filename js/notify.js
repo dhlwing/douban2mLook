@@ -15,6 +15,115 @@ Notify.prototype.show = function(img, title, content) {
     var notify = window.webkitNotifications.createNotification(img, title, content);
     notify.show()
 };
+function request(paras){ 
+    var url = location.href; 
+    var paraString = url.substring(url.indexOf("?")+1,url.length).split("&"); 
+    var paraObj = {} 
+    for (i=0; j=paraString[i]; i++){ 
+        paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length); 
+    } 
+    var returnValue = paraObj[paras.toLowerCase()]; 
+    if(typeof(returnValue)=="undefined"){ 
+        return 0; 
+    }else{ 
+        return returnValue; 
+    } 
+}
+function init_options_page() {
+    $('div.btn-group[data-toggle-name="noti_switch"]').each(function() {
+        var a = $(this),
+        b = a.attr("id"),
+        c = localStorage.getItem(b),
+        d = a.attr("data-default");
+        console.log("localStorage: " + b + "= " + c),
+        c == null && (localStorage.setItem(b, d), c = d),
+        $("button", a).each(function() {
+            var a = $(this);
+            a.val() == c && a.button("toggle"),
+            a.click(function() {
+                console.log("radio switch: " + b + " -> " + a.val()),
+                localStorage.setItem(b, a.val())
+            })
+        })
+    }),
+    $('button.btn[data-toggle-name="cat-button"]').each(function() {
+        var a = $(this),
+        b = a.val(),
+        c = localStorage.getItem(b);
+        c == null && (localStorage.setItem(b, "on"), c = "on"),
+        c == "on" && a.button("toggle"),
+        a.click(function() {
+            a.hasClass("active") ? (console.log("button click: " + b + " -> off"), localStorage.setItem(b, "off")) : (console.log("button click: " + b + " -> on"), localStorage.setItem(b, "on"))
+        }),
+        console.log("localStorage: " + b + "= " + c)
+    }),
+    $("#noti_sound_test").click(function() {
+        var a = $(this);
+        a.button("loading");
+        var b = new Audio("notify.mp3");
+        b.addEventListener("play",
+        function() {
+            a.button("loading")
+        }),
+        b.addEventListener("ended",
+        function() {
+            a.button("reset")
+        }),
+        b.play()
+    }),
+    $("#noti_desktop_test").click(function() {
+        var a = $(this),
+        b = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=0");
+        b.show();
+        var c = localStorage.getItem("desktop_time");
+        setTimeout(function() {
+            b.cancel()
+        },
+        c * 1e3)
+    });
+}
+function notifyShow() {
+    var a = request("msg_id");
+    a == 0 ? ($("#msg_desc").text("mLook精校电子书，分享好的书籍，和朋友一起交流读书心得！"), $("#msg_title").text("mLook"), $("#msg_rate").text("http://www.mlook.mobi"), $("#button_info").click(function() {
+        chrome.tabs.create({
+            url: msg.msg_url
+        })
+    })) : (db = get_db(), db.transaction(function(b) {
+        b.executeSql("select * from messages where msg_id=" + a +" order by msg_date desc limit 1", [],
+        function(b, c) {
+            if (c.rows.length == 1) {
+                var d = c.rows.item(0);
+                if(d.msg_type == 'book') {
+                    d.msg_url == bookinfoUrl+d.msg_id ;
+                    var rate = "豆瓣评分：" + d.msg_douban_star;
+                } else {
+                    d.msg_url == 'http://www.mlook.mobi/api/client/go/'+d.msg_id ;
+                    var rate = "mLook精心推荐";
+                    
+                }
+                
+                $("#button_info").click(function() {
+                    set_message_read(a),
+                    sync_message_number(function() {
+                        chrome.tabs.create({
+                            url: d.msg_url
+                        })
+                    })
+                });
+                $("#msg_title").text(d.msg_title);
+                $("#msg_rate").text(rate); 
+                $("#msg_desc").text(d.msg_desc);
+                if (d.msg_picurl == null || d.msg_picurl == "") d.msg_picurl = "icon.png";
+                var e = $("#msg_picurl");
+                e.fadeOut("fast",
+                function() {
+                    e.attr("src", d.msg_picurl),
+                    e.fadeIn("fast")
+                })
+            }
+        })
+    }))
+}
 
 function init_background() {
     var a = chrome.app.getDetails(),
@@ -140,7 +249,6 @@ function get_db() {
 }
 function insert_message_db(a) {
     db = get_db();
-    console.log('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.desc + '","' + a.linkurl + '","'+a.isbn +'","' + a.itemtype + '","' + a.convert + '","' + a.builddate + '", "' + a.douban_star +'","'+a.average_star+'",0,0)');
     db.transaction(function(b) {
         b.executeSql('insert into messages values ("' + a.bookid + '","' + a.bookname + '","' + a.desc + '","' + a.linkurl + '","'+a.isbn +'","' + a.itemtype + '","' + a.convert + '","' + a.builddate + '", "' + a.douban_star +'","'+a.average_star+'",0,0)')
     })
@@ -380,7 +488,7 @@ function init_dig() {
                 f.msg_top == 0 && (h += '<span class="badge badge-error">新!</span> ', d++),
                 h += f.msg_title + "</h4> " ,
                 h += '<p style="margin-top:3px;">',
-                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-danger" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
+                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + 'http://www.mlook.mobi/api/client/go/'+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-danger" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(h)
             }
             sync_message_number(function(a) {
