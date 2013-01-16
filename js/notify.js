@@ -46,20 +46,9 @@ function init_options_page() {
             })
         })
     }),
-    $('button.btn[data-toggle-name="cat-button"]').each(function() {
-        var a = $(this),
-        b = a.val(),
-        c = localStorage.getItem(b);
-        c == null && (localStorage.setItem(b, "on"), c = "on"),
-        c == "on" && a.button("toggle"),
-        a.click(function() {
-            a.hasClass("active") ? (console.log("button click: " + b + " -> off"), localStorage.setItem(b, "off")) : (console.log("button click: " + b + " -> on"), localStorage.setItem(b, "on"))
-        }),
-        console.log("localStorage: " + b + "= " + c)
-    }),
     $("#noti_sound_test").click(function() {
-        var a = $(this);
-        a.button("loading");
+        var button = $(this);
+        button.button("loading");
         var b = new Audio("notify.mp3");
         b.addEventListener("play",
         function() {
@@ -73,13 +62,13 @@ function init_options_page() {
     }),
     $("#noti_desktop_test").click(function() {
         var a = $(this),
-        b = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=0");
-        b.show();
-        var c = localStorage.getItem("desktop_time");
+        notify = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=0");
+        notify.show();
+        var desktop_time = localStorage.getItem("desktop_time");
         setTimeout(function() {
-            b.cancel()
+            notify.cancel()
         },
-        c * 1e3)
+        desktop_time * 1e3)
     });
 }
 function notifyShow() {
@@ -149,6 +138,7 @@ function init_push() {
     localStorage.getItem("last_msg_date") == null && localStorage.setItem("last_msg_date", ""),
     localStorage.getItem("last_dig_date") == null && localStorage.setItem("last_dig_date", ""),
     localStorage.getItem("unchecked_msg") == null && localStorage.setItem("unchecked_msg", "0"),
+    localStorage.getItem("desktop_time") == null && localStorage.setItem("desktop_time", "30"),
 
     localStorage.getItem("message_limit") == null && localStorage.setItem("message_limit", "100"),
     limit_message_db(localStorage.getItem("message_limit")),
@@ -180,8 +170,9 @@ function get_message(a) {
         console.log(msg);
         var b = [],
         noti_desktop = localStorage.getItem("noti_desktop"),
-        noti_sound = 'on',
-        desktop_time = '30',
+        noti_sound = localStorage.getItem("noti_sound"),
+        desktop_time = localStorage.getItem("desktop_time"),
+
         last_msg_id = parseInt(localStorage.getItem("last_msg_id")),
         last_dig_id = parseInt(localStorage.getItem("last_dig_id")),
         last_msg_date = localStorage.getItem("last_msg_date") ? localStorage.getItem("last_msg_date"):0,
