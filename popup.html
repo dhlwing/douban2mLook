@@ -17,14 +17,17 @@
             <h3>mLook精校电子书</h3> <small>阅读  •  分享  •  生活</small>
         </div>
         <div class="span2">
-            <a href="http://www.mlook.mobi" target="_blank">网站首页</a>&nbsp;&nbsp;
-            <a href="options.html" target="_blank">插件设置</a>
+            <a href="http://www.mlook.mobi" target="_blank">首页</a>&nbsp;&nbsp;
+            <a href="options.html" target="_blank">设置</a>&nbsp;&nbsp;
+			<a href="https://me.alipay.com/kongkong" target="_blank">donate</a>
         </div>
+		
     </div>
     <p>
         <ul id="version_tabs" class="nav nav-tabs">
             <li class="active"><a href="#all_notify_content" data-toggle="tab" id="all_notify_tab">所有提醒</a></li>
-                <li><a href="#fav_notify_content" data-toggle="tab" id="fav_notify_tab">本地收藏</a></li>
+            <li><a href="#fav_notify_content" data-toggle="tab" id="fav_notify_tab">本地收藏</a></li>
+			<li><a href="#dig_notify_content" data-toggle="tab" id="dig_notify_tab">推荐</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade active in" style="height:450px;" id="all_notify_content">
@@ -42,6 +45,14 @@
                 <div id="fav_notify_toolbar">
 					<button class="btn-mini" style="margin:5px;" id="fav_notify_setread"><i class="icon-ok"></i>全部标记为已读</button>
                     <button class="btn-mini" style="margin:5px;" id="fav_notify_remove"><i class="icon-remove"></i>全部删除</button>
+                </div>
+            </div>
+			
+			<div class="tab-pane fade" id="dig_notify_content" style="height:450px;">
+                <div id="dig_notify" style="height:420px;overflow-y:scroll;">
+                </div>
+                <div id="dig_notify_toolbar">
+                    <button class="btn-mini" style="margin:5px;" id="dig_notify_remove"><i class="icon-remove"></i>全部删除</button>
                 </div>
             </div>
 

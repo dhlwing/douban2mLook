@@ -2,6 +2,7 @@
 $(document).ready(init_popup);
 $(document).ready(init_all);
 $(document).ready(init_fav);
+$(document).ready(init_dig);
 $(document).ready(function(){
 	db = get_db();
 	db.transaction(function (query) {
