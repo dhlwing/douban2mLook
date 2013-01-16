@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<title>插件配置</title>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+</style>
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="#">mLook精校电子书 实时推送</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active">
+                        <a href="#basic">设置</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section id="basicSetting">
+        <div class="page-header">
+            <h1>基本设置 <small>插件各种开关的设置</small></h1>
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+                <h3>是否开启桌面提醒</h3>
+                <p></p>
+                <div class="row-fluid">
+                    <div class="btn-group span4" data-toggle="buttons-radio" data-default="on" data-toggle-name="noti_switch" id="noti_desktop">
+                        <button class="btn btn-primary" value="on">开启</button>
+                        <button class="btn btn-primary" value="off">关闭</button>
+                    </div>
+                    <button class="btn btn-info" id="noti_desktop_test"><i class="icon-plus icon-white"></i>测试</button>
+                </div>
+                <br/>
+                <h3>桌面提醒停留时间</h3>
+                <p></p>
+                <div class="row-fluid">
+                    <div class="btn-group span12" data-toggle="buttons-radio" data-default="30" data-toggle-name="noti_switch" id="desktop_time">
+                        <button class="btn btn-primary" value="10">10秒</button>
+                        <button class="btn btn-primary" value="30">30秒</button>
+                        <button class="btn btn-primary" value="60">60秒</button>
+                        <button class="btn btn-primary" value="120">120秒</button>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <h3>是否开启声音提醒</h3>
+                <p></p>
+                <div class="row-fluid">
+                    <div class="btn-group span4" data-toggle="buttons-radio" data-default="on" data-toggle-name="noti_switch" id="noti_sound">
+                         <button class="btn btn-primary" value="on">开启</button>
+                         <button class="btn btn-primary" value="off">关闭</button>
+                    </div>
+                    <button class="btn btn-info" id="noti_sound_test" data-loading-text="播放中..."><i class="icon-play icon-white"></i>试听</button>
+                </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>  
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/notify.js"></script>
+<script type="text/javascript" src="js/options.js"></script>
+</body>
+</html>

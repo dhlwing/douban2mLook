@@ -1,0 +1,1 @@
+$(document).ready(init_options_page);
