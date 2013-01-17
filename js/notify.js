@@ -39,7 +39,12 @@ function init_options_page() {
         value == null && (localStorage.setItem(key, newvalue), value = newvalue),
         $("button", buttonGroup).each(function() {
             var button = $(this);
-            button.val() == value && button.button("toggle"),
+            if(button.val() == value){
+                button.attr('class','btn btn-primary');
+                button.button("toggle");
+            } else {
+                button.attr('class','btn');
+            }
             button.click(function() {
                 console.log("radio switch: " + key + " -> " + button.val()),
                 localStorage.setItem(key, button.val());
