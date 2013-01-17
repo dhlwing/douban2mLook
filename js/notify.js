@@ -294,7 +294,6 @@ function sync_message_number(func) {
             dig_unread = 0;
             for (var h = 0; h < result.rows.length; h++) {
                 var row = result.rows.item(h);
-                allitem++;
                 if(row.msg_fav == 0) {
                     if(row.msg_type=="dig") {
                         dig++;
@@ -303,6 +302,7 @@ function sync_message_number(func) {
                             unread++;
                         } 
                     } else {
+                        allitem++;
                         row.msg_top == 0 && unread++;
                     }
                 } else {
