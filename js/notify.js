@@ -421,7 +421,7 @@ function init_fav() {
                     h += "<br><samll>ISBN:"+f.msg_isbn+"</samll>"
                 }
                 h += '<p style="margin-top:3px;">',
-                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button> - <button class="btn-mini btn-danger" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
+                h += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+f.msg_id + '" msg_id="' + f.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button>   <button class="btn-mini btn-warning" name="button_buy" buy_url="http://www.amazon.cn/gp/search?ie=UTF8&camp=536&creative=3200&index=books&keywords='+f.msg_title+'&linkCode=ur2&tag=dhlwing-23" msg_id="' + e.msg_id + '"><i class="icon-shopping-cart icon-white"></i>卓越购买</button>  <button class="btn-mini btn-danger" name="button_del" msg_id="' + f.msg_id + '"><i class="icon-remove icon-white"></i>删除</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(h)
             }
             sync_message_number(function(a) {
@@ -555,7 +555,7 @@ function init_all() {
                 g += e.msg_title + "</h4> <small>豆瓣评分：" + e.msg_douban_star + "</samll>",
                 g += "<br><samll>ISBN:"+e.msg_isbn+"</samll>"
                 g += '<p style="margin-top:3px;">',
-                g += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+e.msg_id + '" msg_id="' + e.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button>  - <button class="btn-mini btn-warning" name="button_fav" msg_id="' + e.msg_id + '"><i class="icon-star icon-white"></i>移至收藏</button></p></div></div><hr style="margin:8px 0;">',
+                g += '<button class="btn-mini btn-info" name="button_detail" detail_url="' + bookinfoUrl+e.msg_id + '" msg_id="' + e.msg_id + '"><i class="icon-search icon-white"></i>详情页面</button>   <button class="btn-mini btn-warning" name="button_fav" msg_id="' + e.msg_id + '"><i class="icon-star icon-white"></i>移至收藏</button>  <button class="btn-mini btn-warning" name="button_buy" buy_url="http://www.amazon.cn/gp/search?ie=UTF8&camp=536&creative=3200&index=books&keywords='+e.msg_title+'&linkCode=ur2&tag=dhlwing-23" msg_id="' + e.msg_id + '"><i class="icon-shopping-cart icon-white"></i>卓越购买</button></p></div></div><hr style="margin:8px 0;">',
                 c.append(g)
             }
             sync_message_number(function(a) {
@@ -575,7 +575,7 @@ function init_all() {
             $('button[name="button_buy"]', $("#all_notify")).each(function() {
                 var button = $(this);
                 button.click(function() {
-                    set_message_read(a.attr("msg_id")),
+                    set_message_read(button.attr("msg_id")),
                     sync_message_number(function() {
                         chrome.tabs.create({
                             url: button.attr("buy_url")
