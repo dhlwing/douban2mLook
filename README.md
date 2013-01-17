@@ -1,9 +1,10 @@
-douban2mLook
+douban2mLook 2.0
 ============
-在豆瓣读书页面显示mLook的下载链接地址的Chrome插件
+1.在豆瓣读书频道显示当前书籍在mlook的下载地址
+2.第一时间接收mLook的最新书籍
+3.编辑精选各式免费或者打折的书籍
 
-Found books in mLook when you see it on douban
+去chrome商店下载：https://chrome.google.com/webstore/detail/douban2mlook/pklegbobemfenpfammapobkcoippinhp
 
-下载地址：https://github.com/downloads/dhlwing/douban2mLook/mlook.crx
-
-desc: Forked from irachex: https://github.com/irachex/DoubanBook2Shuim
+截图：
+http://ww2.sinaimg.cn/large/a74ecc4cjw1e0wko1y54uj.jpg
