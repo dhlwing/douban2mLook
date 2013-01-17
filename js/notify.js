@@ -294,18 +294,24 @@ function sync_message_number(func) {
             dig_unread = 0;
             for (var h = 0; h < result.rows.length; h++) {
                 var row = result.rows.item(h);
-                if(row.msg_fav == 0 || row.msg_type=="dig") {
+                allitem++;
+                if(row.msg_fav == 0) {
                     if(row.msg_type=="dig") {
                         dig++;
-                        row.msg_top == 0 && (dig_unread++ && unread++);
+                        if(row.msg_top == 0) {
+                            dig_unread++;
+                            unread++;
+                        } 
                     } else {
-                        allitem++;
                         row.msg_top == 0 && unread++;
                     }
                 } else {
                     if(row.msg_type=="dig") {
                         dig++;
-                        row.msg_top == 0 && (dig_unread++ && unread++);
+                        if(row.msg_top == 0 ) {
+                            dig_unread++;
+                            unread++;
+                        }
                     } else {
                         fav++;
                         row.msg_top == 0 && fav_unread++;
