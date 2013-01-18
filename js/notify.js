@@ -177,7 +177,7 @@ function get_message(a) {
     function(msg) {
         msg.reverse();
         console.log(msg);
-        var b = [],
+        var b = tmp = [],
         noti_desktop = localStorage.getItem("noti_desktop"),
         noti_sound = localStorage.getItem("noti_sound"),
         desktop_time = localStorage.getItem("desktop_time"),
@@ -197,9 +197,11 @@ function get_message(a) {
             var lasttime = d.builddate;
             if(d.itemtype == 'book') {
                 lastbookid = parseInt(d.bookid);
+                tmp[a] = parseInt(d.bookid);
+                console.log(lastbookid);
                 if (lasttime != last_msg_date && lastbookid > last_msg_id) {
                     (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
-                        b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + lastbookid),
+                        b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
                         b[a].show(),
                         console.log("noti array: " + b.length),
                         setTimeout(function() {
@@ -213,11 +215,13 @@ function get_message(a) {
                 }
             } else {
                 lastdigid = parseInt(d.bookid);
+                tmp[a] = parseInt(d.bookid);
                 if (lasttime != last_dig_date && lastdigid > last_dig_id) {
                     (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
-                        b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + lastdigid),
+                        b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
                         b[a].show(),
                         console.log("noti array: " + b.length),
+                        //console.log("courrent msgid: " + tmp[a]),
                         setTimeout(function() {
                             b[a].cancel()
                         },
