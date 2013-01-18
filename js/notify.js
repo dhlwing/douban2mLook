@@ -221,7 +221,7 @@ function get_message(a) {
                         b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
                         b[a].show(),
                         console.log("noti array: " + b.length),
-                        //console.log("courrent msgid: " + tmp[a]),
+                        console.log("courrent msgid: " + tmp[a]),
                         setTimeout(function() {
                             b[a].cancel()
                         },
