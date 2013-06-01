@@ -92,10 +92,10 @@ function notifyShow() {
             if (c.rows.length == 1) {
                 var d = c.rows.item(0);
                 if(d.msg_type == 'book') {
-                    d.msg_url == bookinfoUrl+d.msg_id ;
+                    d.msg_url = bookinfoUrl+d.msg_id ;
                     var rate = "豆瓣评分：" + d.msg_douban_star;
                 } else {
-                    d.msg_url == 'http://www.mlook.mobi/api/client/go/'+d.msg_id ;
+                    d.msg_url = 'http://www.mlook.mobi/api/client/go/'+d.msg_id ;
                     var rate = "mLook精心推荐";
                     
                 }
