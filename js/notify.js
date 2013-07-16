@@ -116,11 +116,7 @@ function notifyShow() {
                 
                 $("#button_info").click(function() {
                     set_message_read(a),
-                    sync_message_number(function() {
-                        chrome.tabs.create({
-                            url: d.msg_url
-                        })
-                    })
+                    sync_message_number()
                 });
                 $("#msg_title").text(d.msg_title);
                 $("#msg_rate").text(rate); 
