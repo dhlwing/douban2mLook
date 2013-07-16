@@ -11,9 +11,18 @@ Notify.prototype.getPermission = function(a) {
 Notify.prototype.checkPermission = function() {
     return window.webkitNotifications.checkPermission() == 0
 },
-Notify.prototype.show = function(img, title, content) {
-    var notify = window.webkitNotifications.createNotification(img, title, content);
-    notify.show()
+Notify.prototype.show = function(img, title, content,url,cb) {
+    this.notify = window.webkitNotifications.createNotification(img, title, content);
+    var self = this;
+    this.notify["onclick"]=function(){self.ckcb(url,cb)};
+    this.notify.show();
+};
+Notify.prototype.ckcb = function (url, callback){
+    var callback = callback!=null ? callback : function(){};
+    chrome.tabs.create({url: url}, callback);
+}
+Notify.prototype.cancel = function() {
+    this.notify.cancel();
 };
 function request(paras){ 
     var url = location.href; 
@@ -70,9 +79,14 @@ function init_options_page() {
         audio.play()
     }),
     $("#noti_desktop_test").click(function() {
-        var a = $(this),
-        notify = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=0");
-        notify.show();
+        var a = $(this);
+        if (window.webkitNotifications.createHTMLNotification != undefined) {
+            notify = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=0");
+            notify.show();
+        } else {
+            notify = newNotifyShow(0)
+        }
+        
         var desktop_time = localStorage.getItem("desktop_time");
         setTimeout(function() {
             notify.cancel()
@@ -121,6 +135,45 @@ function notifyShow() {
             }
         })
     }))
+}
+
+function newNotifyShow(bookid,time) {
+    //bookid = 4713;
+    var notify;
+    bookid == 0 ? (title = 'mLook书籍推送',
+        content = 'mLook精校电子书，分享好的书籍，和朋友一起交流读书心得！推送免费和打折的正版书籍',
+        notify = new Notify,
+        notify.show('icon.png',title,content,'http://www.mlook.mobi')) : (db = get_db(), db.transaction(function(b) {
+        b.executeSql("select * from messages where msg_id=" + bookid +" order by msg_date desc limit 1", [],
+        function(b, c) {
+            if (c.rows.length == 1) {
+                var d = c.rows.item(0);
+                if(d.msg_type == 'book') {
+                    d.msg_url = bookinfoUrl+d.msg_id ;
+                } else {
+                    d.msg_url = 'http://www.mlook.mobi/api/client/go/'+d.msg_id ;
+                    
+                }
+                var cb = function() {
+                    set_message_read(bookid),
+                    sync_message_number(function() {
+                        chrome.tabs.create({
+                            url: d.msg_url
+                        })
+                    })
+                };
+
+                if (d.msg_picurl == null || d.msg_picurl == "") d.msg_picurl = "icon.png";
+                notify = new Notify;
+                notify.show(d.msg_picurl,d.msg_title,d.msg_desc,d.msg_url,cb);
+                time ? (
+                setTimeout(function() {
+                    notify.cancel()
+                },time * 1e3)) : '';
+            }
+        })
+    }));
+    return notify;
 }
 
 function init_background() {
@@ -201,13 +254,18 @@ function get_message(a) {
                 console.log(lastbookid);
                 if (lasttime != last_msg_date && lastbookid > last_msg_id) {
                     (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
-                        b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
-                        b[a].show(),
-                        console.log("noti array: " + b.length),
-                        setTimeout(function() {
-                            b[a].cancel()
-                        },
-                        desktop_time * 1e3)
+                        if (window.webkitNotifications.createHTMLNotification != undefined) {
+                            b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
+                            b[a].show();
+                            setTimeout(function() {
+                                b[a].cancel()
+                            },
+                            desktop_time * 1e3);
+                        } else {
+                            b[a] = newNotifyShow(tmp[a],desktop_time);
+                            //notify = new Notify;
+                        }
+                        console.log("noti array: " + b.length);
                     },
                     3e3))),
                     last_msg_date = lasttime,
@@ -218,14 +276,19 @@ function get_message(a) {
                 tmp[a] = parseInt(d.bookid);
                 if (lasttime != last_dig_date && lastdigid > last_dig_id) {
                     (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
-                        b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
-                        b[a].show(),
-                        console.log("noti array: " + b.length),
-                        console.log("courrent msgid: " + tmp[a]),
-                        setTimeout(function() {
-                            b[a].cancel()
-                        },
-                        desktop_time * 1e3)
+                        if (window.webkitNotifications.createHTMLNotification != undefined) {
+                            b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
+                            b[a].show();
+                            setTimeout(function() {
+                                b[a].cancel()
+                            },
+                            desktop_time * 1e3);
+                        } else {
+                            b[a] = newNotifyShow(tmp[a],desktop_time);
+                            //notify = new Notify;
+                        }
+                        console.log("noti array: " + b.length);
+                        console.log("courrent msgid: " + tmp[a]);
                     },
                     3e3))),
                     last_dig_date = lasttime,
