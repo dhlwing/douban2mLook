@@ -116,7 +116,11 @@ function notifyShow() {
                 
                 $("#button_info").click(function() {
                     set_message_read(a),
-                    sync_message_number()
+                    sync_message_number(function() {
+                        chrome.tabs.create({
+                            url: d.msg_url
+                        })
+                    })
                 });
                 $("#msg_title").text(d.msg_title);
                 $("#msg_rate").text(rate); 
@@ -152,11 +156,7 @@ function newNotifyShow(bookid,time) {
                 }
                 var cb = function() {
                     set_message_read(bookid),
-                    sync_message_number(function() {
-                        chrome.tabs.create({
-                            url: d.msg_url
-                        })
-                    })
+                    sync_message_number();
                 };
 
                 if (d.msg_picurl == null || d.msg_picurl == "") d.msg_picurl = "icon.png";
