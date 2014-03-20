@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "douban2mLook",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Found books in mLook when you see it on douban",
   "content_scripts": [{
       "matches": ["http://book.douban.com/*"],
