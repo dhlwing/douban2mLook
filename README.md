@@ -8,3 +8,5 @@ douban2mLook 2.0
 
 截图：
 ![Alt 截图](http://ww2.sinaimg.cn/large/a74ecc4cjw1e0wko1y54uj.jpg)
+
+FireFox greasemonkey: <https://github.com/dhlwing/douban2mLook/issues/1>
