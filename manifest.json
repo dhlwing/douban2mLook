@@ -8,6 +8,9 @@
       "js": ["js/jquery.js", "js/douban2mlook.js"]
   }],
   "permissions" : [ "notifications", "http://*.mlook.mobi/*" ],
+  "web_accessible_resources": [
+    "48.png"
+  ],
   "icons" : {
     "48" : "icon48.png",
     "128" : "icon.png"

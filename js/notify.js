@@ -4,6 +4,7 @@ Notify.prototype.isSupport = function() {
     return !! window.webkitNotifications
 },
 Notify.prototype.getPermission = function(a) {
+    return;
     window.webkitNotifications.requestPermission(function() {
         a && a(this.checkPermission())
     })
