@@ -9,7 +9,7 @@
   }],
   "permissions" : [ "notifications", "http://*.mlook.mobi/*" ],
   "web_accessible_resources": [
-    "48.png"
+    "icon48.png"
   ],
   "icons" : {
     "48" : "icon48.png",
