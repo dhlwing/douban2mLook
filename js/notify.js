@@ -1,9 +1,13 @@
 var bookinfoUrl = "http://www.mlook.mobi/book/info/";
+var clickOpt   = {};
 var Notify = function() {};
 Notify.prototype.isSupport = function() {
     return !! window.webkitNotifications
 },
 Notify.prototype.getPermission = function(a) {
+    chrome.notifications.getPermissionLevel(function(granted){
+        return 'granted';
+    });
     return;
     window.webkitNotifications.requestPermission(function() {
         a && a(this.checkPermission())
@@ -13,18 +17,49 @@ Notify.prototype.checkPermission = function() {
     return window.webkitNotifications.checkPermission() == 0
 },
 Notify.prototype.show = function(img, title, content,url,cb) {
-    this.notify = window.webkitNotifications.createNotification(img, title, content);
-    var self = this;
-    this.notify["onclick"]=function(){self.ckcb(url,cb)};
-    this.notify.show();
+    var opt = {
+        type: "basic",  //list
+        title: title,
+        message: content,
+        iconUrl: img,
+        //imageUrl: 'icon48.png',
+        /*
+        items: [{ title: "Item1", message: "This is item 1."},
+                { title: "Item2", message: "This is item 2."},
+                { title: "Item3", message: "This is item 3."}] */
+    };
+    var self       = this;
+    var notifyId   = this.notifyId = title + Math.random();
+    this.notify    = chrome.notifications;
+    clickOpt[notifyId] = {
+        url:url,callback:cb
+    };
+
+    this.notify.create(this.notifyId, opt,function(){});
+    
+    //this.notify = window.webkitNotifications.createNotification(img, title, content);
+    
+    //this.notify["onclick"]=function(){self.ckcb(url,cb)};
+    //this.notify.show();
 };
-Notify.prototype.ckcb = function (url, callback){
+Notify.prototype.ckcb = function (url,callback){
     var callback = callback!=null ? callback : function(){};
     chrome.tabs.create({url: url}, callback);
+    console.log('ttt');
+    this.notify.cancel();
 }
 Notify.prototype.cancel = function() {
-    this.notify.cancel();
+    this.notify.clear(this.notifyId,function(){});
+    //this.notify.cancel();
 };
+
+chrome.notifications.onClicked.addListener(function(notifyId){
+    console.log(notifyId);
+    chrome.tabs.create({url: clickOpt[notifyId].url}, clickOpt[notifyId].callback);
+    delete clickOpt[notifyId];
+    chrome.notifications.clear(notifyId,function(){});
+});
+
 function request(paras){ 
     var url = location.href; 
     var paraString = url.substring(url.indexOf("?")+1,url.length).split("&"); 
@@ -251,7 +286,7 @@ function get_message(a) {
                 console.log(lastbookid);
                 if (lasttime != last_msg_date && lastbookid > last_msg_id) {
                     (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
-                        if (window.webkitNotifications.createHTMLNotification != undefined) {
+                        if (0 && window.webkitNotifications.createHTMLNotification != undefined) {
                             b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
                             b[a].show();
                             setTimeout(function() {
