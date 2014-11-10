@@ -34,9 +34,7 @@ Notify.prototype.show = function(img, title, content,url,cb) {
     clickOpt[notifyId] = {
         url:url,callback:cb
     };
-
-    console.log(notifyId);
-    this.notify.create('', opt, function(){});
+    this.notify.create(notifyId, opt, function(){});
     
     //this.notify = window.webkitNotifications.createNotification(img, title, content);
     
