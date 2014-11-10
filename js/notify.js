@@ -35,7 +35,8 @@ Notify.prototype.show = function(img, title, content,url,cb) {
         url:url,callback:cb
     };
 
-    this.notify.create(this.notifyId, opt,function(){});
+    console.log(notifyId);
+    this.notify.create('', opt, function(){});
     
     //this.notify = window.webkitNotifications.createNotification(img, title, content);
     
@@ -261,7 +262,6 @@ function get_message(a) {
     $.getJSON("http://www.mlook.mobi/api/client/push",
     function(msg) {
         msg.reverse();
-        console.log(msg);
         var b = tmp = [],
         noti_desktop = localStorage.getItem("noti_desktop"),
         noti_sound = localStorage.getItem("noti_sound"),
@@ -270,8 +270,7 @@ function get_message(a) {
         last_msg_id = parseInt(localStorage.getItem("last_msg_id")),
         last_dig_id = parseInt(localStorage.getItem("last_dig_id")),
         last_msg_date = localStorage.getItem("last_msg_date") ? localStorage.getItem("last_msg_date"):0,
-        last_dig_date = localStorage.getItem("last_dig_date") ? localStorage.getItem("last_dig_date"):0,
-        i = !1;
+        last_dig_date = localStorage.getItem("last_dig_date") ? localStorage.getItem("last_dig_date"):0;
         console.log(last_msg_id);
         last_msg_id = last_msg_id ? last_msg_id : 0;
         last_dig_id = last_dig_id ? last_dig_id : 0;
@@ -283,9 +282,8 @@ function get_message(a) {
             if(d.itemtype == 'book') {
                 lastbookid = parseInt(d.bookid);
                 tmp[a] = parseInt(d.bookid);
-                console.log(lastbookid);
                 if (lasttime != last_msg_date && lastbookid > last_msg_id) {
-                    (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
+                    (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (setTimeout(function() {
                         if (0 && window.webkitNotifications.createHTMLNotification != undefined) {
                             b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
                             b[a].show();
@@ -306,21 +304,10 @@ function get_message(a) {
             } else {
                 lastdigid = parseInt(d.bookid);
                 tmp[a] = parseInt(d.bookid);
+                console.log(tmp[a]);
                 if (lasttime != last_dig_date && lastdigid > last_dig_id) {
-                    (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (i = !0, setTimeout(function() {
-                        if (window.webkitNotifications.createHTMLNotification != undefined) {
-                            b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
-                            b[a].show();
-                            setTimeout(function() {
-                                b[a].cancel()
-                            },
-                            desktop_time * 1e3);
-                        } else {
-                            b[a] = newNotifyShow(tmp[a],desktop_time);
-                            //notify = new Notify;
-                        }
-                        console.log("noti array: " + b.length);
-                        console.log("courrent msgid: " + tmp[a]);
+                    (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (setTimeout(function() {
+                        b[a] = newNotifyShow(tmp[a],desktop_time);
                     },
                     3e3))),
                     last_dig_date = lasttime,
@@ -329,7 +316,7 @@ function get_message(a) {
             }
             
         }),
-        i && noti_sound == "on" && (sync_message_number(), (new Audio("notify.mp3")).play()),
+        noti_sound == "on" && (sync_message_number(), (new Audio("notify.mp3")).play()),
         localStorage.setItem("last_msg_id", last_msg_id.toString()),
         localStorage.setItem("last_msg_date", last_msg_date);
         localStorage.setItem("last_dig_id", last_dig_id.toString()),
