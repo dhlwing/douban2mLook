@@ -272,6 +272,7 @@ function get_message(a) {
         console.log(last_msg_id);
         last_msg_id = last_msg_id ? last_msg_id : 0;
         last_dig_id = last_dig_id ? last_dig_id : 0;
+        sound = false;
         $.each(msg,
         function(a, d) {
             var h = !1;
@@ -281,6 +282,7 @@ function get_message(a) {
                 lastbookid = parseInt(d.bookid);
                 tmp[a] = parseInt(d.bookid);
                 if (lasttime != last_msg_date && lastbookid > last_msg_id) {
+                    console.log(tmp[a]);
                     (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (setTimeout(function() {
                         if (0 && window.webkitNotifications.createHTMLNotification != undefined) {
                             b[a] = window.webkitNotifications.createHTMLNotification("notification.html?msg_id=" + tmp[a]),
@@ -297,24 +299,27 @@ function get_message(a) {
                     },
                     3e3))),
                     last_msg_date = lasttime,
-                    last_msg_id = lastbookid
+                    last_msg_id = lastbookid,
+                    sound = true;
                 }
             } else {
                 lastdigid = parseInt(d.bookid);
                 tmp[a] = parseInt(d.bookid);
                 console.log(tmp[a]);
                 if (lasttime != last_dig_date && lastdigid > last_dig_id) {
+                    console.log(tmp[a]);
                     (insert_message_db(d), limit_message_db(localStorage.getItem("message_limit")), noti_desktop == "on" && (setTimeout(function() {
                         b[a] = newNotifyShow(tmp[a],desktop_time);
                     },
                     3e3))),
                     last_dig_date = lasttime,
-                    last_dig_id = lastdigid
+                    last_dig_id = lastdigid,
+                    sound = true;
                 }
             }
             
         }),
-        noti_sound == "on" && (sync_message_number(), (new Audio("notify.mp3")).play()),
+        sound && noti_sound == "on" && (sync_message_number(), (new Audio("notify.mp3")).play()),
         localStorage.setItem("last_msg_id", last_msg_id.toString()),
         localStorage.setItem("last_msg_date", last_msg_date);
         localStorage.setItem("last_dig_id", last_dig_id.toString()),
