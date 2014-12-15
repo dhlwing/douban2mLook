@@ -1,3 +1,4 @@
+var base_url = 'http://plugin.mlook.mobi';
 function ajaxget(url) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, false);
@@ -8,7 +9,7 @@ function ajaxget(url) {
 function getQueryUrl(query) {
     //data is book title
     var timestamp = new Date().getTime();
-    var url = "http://www.mlook.mobi/api/search?q={{query}}&limit=1&f=douban&timestamp="+timestamp;
+    var url = base_url + "/api/search?q={{query}}&limit=1&f=douban&timestamp="+timestamp;
     url = url.replace("{{query}}", query);
     return url;
 }

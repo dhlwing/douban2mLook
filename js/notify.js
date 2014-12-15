@@ -1,5 +1,5 @@
-var bookinfoUrl = "http://www.mlook.mobi/book/info/";
-var clickOpt   = {};
+var bookinfoUrl = "http://www.mlook.mobi/book/info/",
+push_url = 'http://plugin.mlook.mobi',clickOpt   = {};
 var Notify = function() {};
 Notify.prototype.isSupport = function() {
     return !! window.webkitNotifications
@@ -257,7 +257,7 @@ function start_push() {
     setTimeout(start_push, 6e4)
 }
 function get_message(a) {
-    $.getJSON("http://www.mlook.mobi/api/client/push",
+    $.getJSON(push_url + "/api/client/push",
     function(msg) {
         msg.reverse();
         var b = tmp = [],
