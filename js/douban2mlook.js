@@ -1,4 +1,4 @@
-var base_url = 'http://plugin.mlook.mobi';
+var base_url = 'https://www.mlook.mobi';
 function ajaxget(url) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, false);
