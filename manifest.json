@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
   "name": "douban2mLook",
-  "version": "2.1.11",
+  "version": "2.1.12",
   "description": "Found books in mLook when you see it on douban",
   "content_scripts": [{
-      "matches": ["http://book.douban.com/*"],
+      "matches": ["http://book.douban.com/*", "https://book.douban.com/*"],
       "js": ["js/jquery.js", "js/douban2mlook.js"]
   }],
   "permissions" : [ "notifications", "http://*.mlook.mobi/*","http://*/", "https://*/"],

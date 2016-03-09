@@ -52,11 +52,11 @@ var url = window.location.toString();
 var query;
 
 // Book Page
-if ( url.indexOf('subject')!=-1 ){
+if ( url.indexOf('subject') != -1 ){
     query = $("#mainpic img").attr("alt"); 
-    var btn = $(sendQuery(query,url));
+    var btn = $(sendQuery(query, url));
     $('div.a_stars').before(btn);
-} else if( (url.indexOf('mine')!=-1)||(url.indexOf('people')!=-1) ){
+} else if( (url.indexOf('mine') != -1)||(url.indexOf('people') != -1) ){
     // People's Book List Page
     $('div.item ul').each(function(){
         query = $('li.title a em', this).text();
@@ -65,7 +65,7 @@ if ( url.indexOf('subject')!=-1 ){
         $('div.opt-r', this).after(btn.css("float","right"));
     });
     
-} else if( url.indexOf('doulist')!=-1 ){
+} else if( url.indexOf('doulist') != -1 ){
     // System's Book List Page : doulist
     $('div.article table').each(function(){
         query = $('div.pl2 > a', this).text();
@@ -73,7 +73,7 @@ if ( url.indexOf('subject')!=-1 ){
         var btn = $(sendQuery(query,dbBookUrl));
         $('td > span.rr', this).prepend(btn);
     });
-} else if( url.indexOf('tag')!=-1 ){
+} else if( url.indexOf('tag') != -1 ){
     // System's Book List Page : tag
     $('.subject-item').each(function(){
         query = $('div.info h2 a', this).contents().eq(0).text();
